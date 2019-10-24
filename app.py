@@ -1,5 +1,6 @@
 from flask import Flask, render_template
 from flask_bootstrap import Bootstrap
+import datetime
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -8,7 +9,8 @@ Bootstrap(app)
 def index():
 
     templateData = {
-        'title': 'Info-Hub Pfiffikus Lernhilfe',
+        'title': 'Info-Hub Pfiffikus Lernhilfe'#,
+        #'time': datetime.datetime.now().strftime(%H:%M:%S)
     }
     return render_template('index.html', **templateData)
 
