@@ -147,13 +147,19 @@ a:hover, a:focus, a:active, a:visited {
 }
 .feature {
 	padding: 20px;
-	margin-top: 20px;
+}
+.feature-nopad {
+    width: 35%;
 }
 .feature span {
 	font-size: 5em;
     color: #4bb03c;
 }
-
+.feature-nopad {
+	-webkit-transition: all 0.3s;
+  	-moz-transition: all 0.3s;
+  	transition: all 0.3s;
+}
 .speaker .feature {
 	width: 31.333333%;
 	-webkit-transition: all 0.3s;
