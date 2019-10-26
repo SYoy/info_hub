@@ -1,58 +1,63 @@
-/* This solution makes use of "simple access" to google, providing only an API Key.
-* This way we can only get access to public calendars. To access a private calendar,
-* we would need to use OAuth 2.0 access.
-*
-* "Simple" vs. "Authorized" access: https://developers.google.com/api-client-library/javascript/features/authentication
-* Examples of "simple" vs OAuth 2.0 access: https://developers.google.com/api-client-library/javascript/samples/samples#authorizing-and-making-authorized-requests
-*
-* We will make use of "Option 1: Load the API discovery document, then assemble the request."
-* as described in https://developers.google.com/api-client-library/javascript/start/start-js
-*/
-function printCalendar() {
-    // The "Calendar ID" from your calendar settings page, "Calendar Integration" section:
-    var calendarId = 'nldm89pqes04qoig1kui225ucs@group.calendar.google.com';
+// Your Client ID can be retrieved from your project in the Google
+// Developer Console, https://console.developers.google.com
+var CLIENT_ID = '618850417922-on3eth3su88u0c13lqs4eaod40hkojhn.apps.googleusercontent.com';
+var API_KEY = 'AIzaSyCf9pALBGw6VQBEmH6PwLXb7rO3AnUgP9g'
+var CAL_ID = 'nldm89pqes04qoig1kui225ucs@group.calendar.google.com'
+var SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"];
 
-    // 1. Create a project using google's wizzard: https://console.developers.google.com/start/api?id=calendar
-    // 2. Create credentials:
-    //    a) Go to https://console.cloud.google.com/apis/credentials
-    //    b) Create Credentials / API key
-    //    c) Since your key will be called from any of your users' browsers, set "Application restrictions" to "None",
-    //       leave "Website restrictions" blank; you may optionally set "API restrictions" to "Google Calendar API"
-    var apiKey = 'AIzaSyALmtKsw2VaNax5MM2vf2TvuM3Wn6OAo5M';
-    // You can get a list of time zones from here: http://www.timezoneconverter.com/cgi-bin/zonehelp
-    var userTimeZone = "Europe/Berlin";
 
-    // Initializes the client with the API key and the Translate API.
-    gapi.client.init({
-        'apiKey': apiKey,
-        // Discovery docs docs: https://developers.google.com/api-client-library/javascript/features/discovery
-        'discoveryDocs': ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
-    }).then(function () {
-        // Use Google's "apis-explorer" for research: https://developers.google.com/apis-explorer/#s/calendar/v3/
-        // Events: list API docs: https://developers.google.com/calendar/v3/reference/events/list
-        return gapi.client.calendar.events.list({
-            'calendarId': calendarId,
-            'timeZone': userTimeZone,
-            'singleEvents': true,
-            'timeMin': (new Date()).toISOString(), //gathers only events not happened yet
-            'maxResults': 20,
-            'orderBy': 'startTime'
-        });
-    }).then(function (response) {
-        if (response.result.items) {
-            var calendarRows = ['<table class="wellness-calendar"><tbody>'];
-            response.result.items.forEach(function(entry) {
-                var startsAt = moment(entry.start.dateTime).format("L") + ' ' + moment(entry.start.dateTime).format("LT");
-                var endsAt = moment(entry.end.dateTime).format("LT");
-                calendarRows.push(`<tr><td>${startsAt} - ${endsAt}</td><td>${entry.summary}</td></tr>`);
-            });
-            calendarRows.push('</tbody></table>');
-            $('#wellness-calendar').html(calendarRows.join(""));
+/**
+ * Load Google Calendar client library. List upcoming events
+ * once client library is loaded.
+ */
+function loadCalendarApi() {
+  gapi.client.setApiKey(API_KEY);
+  gapi.client.load('calendar', 'v3', listUpcomingEvents);
+}
+
+/**
+ * Print the summary and start datetime/date of the next ten events in
+ * the authorized user's calendar. If no events are found an
+ * appropriate message is printed.
+ */
+function listUpcomingEvents() {
+  var request = gapi.client.calendar.events.list({
+    'calendarId': CAL_ID,
+    'timeMin': (new Date()).toISOString(),
+    'showDeleted': false,
+    'singleEvents': true,
+    'maxResults': 10,
+    'orderBy': 'startTime'
+  });
+
+  request.execute(function(resp) {
+    var events = resp.items;
+    appendPre('Upcoming events:');
+
+    if (events.length > 0) {
+      for (i = 0; i < events.length; i++) {
+        var event = events[i];
+        var when = event.start.dateTime;
+        if (!when) {
+          when = event.start.date;
         }
-    }, function (reason) {
-        console.log('Error: ' + reason.result.error.message);
-    });
-};
+        appendPre(event.summary + ' (' + when + ')')
+      }
+    } else {
+      appendPre('No upcoming events found.');
+    }
 
-// Loads the JavaScript client library and invokes `start` afterwards.
-gapi.load('client', printCalendar);
+  });
+}
+
+/**
+ * Append a pre element to the body containing the given message
+ * as its text node.
+ *
+ * @param {string} message Text to be placed in pre element.
+ */
+function appendPre(message) {
+  var pre = document.getElementById('output');
+  var textContent = document.createTextNode(message + '\n');
+  pre.appendChild(textContent);
+}

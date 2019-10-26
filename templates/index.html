@@ -17,101 +17,184 @@
   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <style> .carousel-inner > .item > img{ width: 854px; height: 480px; } </style>
+
+  <!-- JQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script type="text/javascript">
+
+    // Your Client ID can be retrieved from your project in the Google
+    // Developer Console, https://console.developers.google.com
+    var CLIENT_ID = '618850417922-on3eth3su88u0c13lqs4eaod40hkojhn.apps.googleusercontent.com';
+    var API_KEY = 'AIzaSyCf9pALBGw6VQBEmH6PwLXb7rO3AnUgP9g'
+    var CAL_ID = 'nldm89pqes04qoig1kui225ucs@group.calendar.google.com'
+    var SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"];
+
+
+    /**
+     * Load Google Calendar client library. List upcoming events
+     * once client library is loaded.
+     */
+    function loadCalendarApi() {
+      gapi.client.setApiKey(API_KEY);
+      gapi.client.load('calendar', 'v3', listUpcomingEvents);
+    }
+
+    /**
+     * Print the summary and start datetime/date of the next ten events in
+     * the authorized user's calendar. If no events are found an
+     * appropriate message is printed.
+     */
+    function listUpcomingEvents() {
+      var request = gapi.client.calendar.events.list({
+        'calendarId': CAL_ID,
+        'timeMin': (new Date()).toISOString(),
+        'showDeleted': false,
+        'singleEvents': true,
+        'maxResults': 10,
+        'orderBy': 'startTime'
+      });
+
+      request.execute(function(resp) {
+        var events = resp.items;
+        appendPre('Upcoming events:');
+
+        if (events.length > 0) {
+          for (i = 0; i < events.length; i++) {
+            var event = events[i];
+            var when = event.start.dateTime;
+            if (!when) {
+              when = event.start.date;
+            }
+            appendPre(event.summary + ' (' + when + ')')
+          }
+        } else {
+          appendPre('No upcoming events found.');
+        }
+
+      });
+    }
+
+    /**
+     * Append a pre element to the body containing the given message
+     * as its text node.
+     *
+     * @param {string} message Text to be placed in pre element.
+     */
+    function appendPre(message) {
+      var pre = document.getElementById('output');
+      var textContent = document.createTextNode(message + '\n');
+      pre.appendChild(textContent);
+    }
+
+  </script>
+  <script src="https://apis.google.com/js/client.js?onload=loadCalendarApi">
+  </script>
+
 </head>
-    <body id="page-top" data-spy="scroll" data-target=".side-menu">
+<body id="page-top" data-spy="scroll" data-target=".side-menu">
 
-      <div class="container-fluid" style="background: #9d9d9d">
-        <!-- Start: slideshow and timetable -->
-        <div class="row hero-header content-ct" id="slideshow">
-          <div class="col-lg-7 img-rounded" style="color:#ffffff; width: 854px; height: 480px; margin-right: 10px;">
-            <!-- background: #a8b565;
-             <h1> Sildeshow </h1>-->
+  <!-- Google Calender Authorization -->
+  <div id="authorize-div" style="display: none">
+    <span>Authorize access to Google Calendar API</span>
+    <!--Button for the user to click to initiate auth sequence -->
+    <button id="authorize-button" onclick="handleAuthClick(event)">
+      Authorize
+    </button>
+  </div>
 
-              <div id="carousel" class="carousel slide" data-ride="carousel" data-interval="10000"> <!-- 10000-->
-                <div class="carousel-inner">
-                  {% if slideshow  %}
-                    {% for i in range(pictures|length) %}
-                     {% if i == 0  %}
-                       <div class="item active">
-                         <img src="{{ pictures[i] }}" class="img-rounded" alt="{{ i }}">
-                       </div>
-                      {% else  %}
-                        <div class="item img-rounded">
-                         <img src="{{ pictures[i] }}" class="img-rounded" alt="{{ i }}">
-                       </div>
-                      {% endif %}
-                    {% endfor %}
+  <div class="container-fluid" style="background: #9d9d9d">
+    <!-- Start: slideshow and timetable -->
+    <div class="row hero-header content-ct" id="slideshow">
+      <div class="col-lg-7 img-rounded" style="color:#ffffff; width: 854px; height: 480px; margin-right: 10px;">
+        <!-- background: #a8b565;
+         <h1> Sildeshow </h1>-->
 
-                  {% else %}
-                    <h1> Slideshow not working </h1>
-                    <div class="item active img-rounded">
-                      <img src="static/img/placeholder.jpg" alt="placeholde">
-                    </div>
+          <div id="carousel" class="carousel slide" data-ride="carousel" data-interval="10000"> <!-- 10000-->
+            <div class="carousel-inner">
+              {% if slideshow  %}
+                {% for i in range(pictures|length) %}
+                 {% if i == 0  %}
+                   <div class="item active">
+                     <img src="{{ pictures[i] }}" class="img-rounded" alt="{{ i }}">
+                   </div>
+                  {% else  %}
+                    <div class="item img-rounded">
+                     <img src="{{ pictures[i] }}" class="img-rounded" alt="{{ i }}">
+                   </div>
                   {% endif %}
+                {% endfor %}
+
+              {% else %}
+                <h1> Slideshow not working </h1>
+                <div class="item active img-rounded">
+                  <img src="static/img/placeholder.jpg" alt="placeholde">
                 </div>
-              </div>
+              {% endif %}
+            </div>
           </div>
+      </div>
 
-          <div class="col-lg-7 img-rounded" style="color:#ffffff; width: 854px; height: 480px; background: #74a4b5">
-             <!--  background: #4492b5 -->
-             <!-- <iframe src="https://calendar.google.com/calendar/b/1/embed?height=480&amp;wkst=2&amp;bgcolor=%23c3e2a7&amp;ctz=Europe%2FBerlin&amp;src=bmxkbTg5cHFlczA0cW9pZzFrdWkyMjV1Y3NAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&amp;color=%23F6BF26&amp;showTitle=0&amp;showNav=0&amp;showDate=0&amp;showPrint=0&amp;showTabs=0&amp;showCalendars=0&amp;showTz=0&amp;mode=AGENDA&amp;title" style="border:solid 1px #777" width="854" height="480" frameborder="0" scrolling="no"></iframe>
+      <div class="col-lg-7 img-rounded" style="color:#ffffff; width: 854px; height: 480px; background: #74a4b5">
+         <!--  background: #4492b5 -->
+         <!-- <iframe src="https://calendar.google.com/calendar/b/1/embed?height=480&amp;wkst=2&amp;bgcolor=%23c3e2a7&amp;ctz=Europe%2FBerlin&amp;src=bmxkbTg5cHFlczA0cW9pZzFrdWkyMjV1Y3NAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&amp;color=%23F6BF26&amp;showTitle=0&amp;showNav=0&amp;showDate=0&amp;showPrint=0&amp;showTabs=0&amp;showCalendars=0&amp;showTz=0&amp;mode=AGENDA&amp;title" style="border:solid 1px #777" width="854" height="480" frameborder="0" scrolling="no"></iframe>
 
-             <script type="text/javascript" src="https://feed.mikle.com/js/fw-loader.js" data-fw-param="118900/"></script> -->
-            <!--
-            <link href='https://www.planyo.com/libs/fullcalendar-scheduler/lib/fullcalendar.min.css' rel='stylesheet' /><link href='https://www.planyo.com/libs/fullcalendar-scheduler/scheduler.min.css' rel='stylesheet' /><div id='cpcal_planyonet' class='cp_calendar cp_units_30 ' ></div><a title='Calendar powered by Planyo' alt='Calendar powered by Planyo' href='http://www.planyo.net' target='_blank' class='cp_pb'>calendar </a><div id='cp_fetch_cpcal_planyonet' class='cp_fetching' style='position:absolute;left:200px;top:10px;display:none;z-index:999;'><img src='https://www.planyo.com/images/hourglass.gif' /></div><script>
-              if(!document.cp_instances) document.cp_instances = new Array(); document.cp_instances.push({'all_views':'custAgendaDay', 'def_view':'custAgendaDay', 'time_unit':30, 'resources':[{"id":"Kurse","title":"Kurse","granulation":"30","click_url":null}], 'resource_id': "Kurse", 'jsonp_url':{url:"https://www.planyo.net/fetch-calendar.php?eh=8b6d1760c46888e2da52aa0255293a7c306caa4f&ih=1b1360068dfab802a8a1b4eb0e362d3b7ad01836&callback=?", cache: false}, 'timezone':'site', 'tz_offset': 0, 'min_hour':'13:00:00', 'max_hour':'20:00:00', 'open_frame':"_top", 'element_id':'cpcal_planyonet', 'fetching_id':'cp_fetch_cpcal_planyonet', 'lng': 'de'}); document.cp_time_format='HH:mm'; document.cp_title_format='dddd, MMMM Do, YYYY'; document.cp_title_format_short='ddd, MMM Do'; document.cp_s_day="day"; document.cp_s_days="days"; document.cp_s_vert_day="vertical day"; document.cp_s_month="month"; document.cp_s_week="week"; document.cp_s_weeks="weeks"; document.cp_s_agenda="agenda";
+         <script type="text/javascript" src="https://feed.mikle.com/js/fw-loader.js" data-fw-param="118900/"></script> -->
+        <!--
+        <link href='https://www.planyo.com/libs/fullcalendar-scheduler/lib/fullcalendar.min.css' rel='stylesheet' /><link href='https://www.planyo.com/libs/fullcalendar-scheduler/scheduler.min.css' rel='stylesheet' /><div id='cpcal_planyonet' class='cp_calendar cp_units_30 ' ></div><a title='Calendar powered by Planyo' alt='Calendar powered by Planyo' href='http://www.planyo.net' target='_blank' class='cp_pb'>calendar </a><div id='cp_fetch_cpcal_planyonet' class='cp_fetching' style='position:absolute;left:200px;top:10px;display:none;z-index:999;'><img src='https://www.planyo.com/images/hourglass.gif' /></div><script>
+          if(!document.cp_instances) document.cp_instances = new Array(); document.cp_instances.push({'all_views':'custAgendaDay', 'def_view':'custAgendaDay', 'time_unit':30, 'resources':[{"id":"Kurse","title":"Kurse","granulation":"30","click_url":null}], 'resource_id': "Kurse", 'jsonp_url':{url:"https://www.planyo.net/fetch-calendar.php?eh=8b6d1760c46888e2da52aa0255293a7c306caa4f&ih=1b1360068dfab802a8a1b4eb0e362d3b7ad01836&callback=?", cache: false}, 'timezone':'site', 'tz_offset': 0, 'min_hour':'13:00:00', 'max_hour':'20:00:00', 'open_frame':"_top", 'element_id':'cpcal_planyonet', 'fetching_id':'cp_fetch_cpcal_planyonet', 'lng': 'de'}); document.cp_time_format='HH:mm'; document.cp_title_format='dddd, MMMM Do, YYYY'; document.cp_title_format_short='ddd, MMM Do'; document.cp_s_day="day"; document.cp_s_days="days"; document.cp_s_vert_day="vertical day"; document.cp_s_month="month"; document.cp_s_week="week"; document.cp_s_weeks="weeks"; document.cp_s_agenda="agenda";
 
-            var scr0 = document.createElement('script'); scr0.onload = function () { var scr1 = document.createElement('script'); scr1.onload = function () {var scr2 = document.createElement('script'); scr2.onload = function() {var scr3 = document.createElement('script'); scr3.src = "https://www.planyo.com/embed-schedule.js"; document.head.appendChild(scr3);}; scr2.src = "https://www.planyo.com/libs/fullcalendar/locale/de.js"; document.head.appendChild(scr2);}; scr1.src = "https://www.planyo.com/libs/planyonet-fc.js"; document.head.appendChild(scr1); }; scr0.src = "https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"; document.head.appendChild(scr0);
-            </script>
-            <link rel='stylesheet' href='https://www.planyo.com/planyonet/planyo.net.css' type='text/css' />
-            -->
-          </div>
-        </div>
+        var scr0 = document.createElement('script'); scr0.onload = function () { var scr1 = document.createElement('script'); scr1.onload = function () {var scr2 = document.createElement('script'); scr2.onload = function() {var scr3 = document.createElement('script'); scr3.src = "https://www.planyo.com/embed-schedule.js"; document.head.appendChild(scr3);}; scr2.src = "https://www.planyo.com/libs/fullcalendar/locale/de.js"; document.head.appendChild(scr2);}; scr1.src = "https://www.planyo.com/libs/planyonet-fc.js"; document.head.appendChild(scr1); }; scr0.src = "https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"; document.head.appendChild(scr0);
+        </script>
+        <link rel='stylesheet' href='https://www.planyo.com/planyonet/planyo.net.css' type='text/css' />
+        -->
+
+        <pre id="output"></pre>
 
       </div>
-      <!-- End: slideshow -->
-      <!-- Start: "plugins" -->
-      <div class="container-fluid" style="padding-top: 0px">
-        <div class="row hero-header content-ct" style="min-height: 0px; background: #8cb595" id="wetter_zeit">
-          <div class="col-md-6 feature-nopad" style="color:#ffffff; width: 47%; margin-right: 1%; margin-left: 1%; margin-bottom: 10px;"> <!--background: aquamarine"> -->
+    </div>
 
-            <div class="col-md-6 img-rounded" style="color:#404b54; margin: 0 auto; width: 100%; height: 60px; background: #e8e8e8; margin-bottom: 25px;">
-              <h3 style="text-align: left"> <b>Info:</b> {{ infoMessage }} </h3>
-            </div>
+  </div>
+  <!-- End: slideshow -->
+  <!-- Start: "plugins" -->
+  <div class="container-fluid" style="padding-top: 0px">
+    <div class="row hero-header content-ct" style="min-height: 0px; background: #8cb595" id="wetter_zeit">
+      <div class="col-md-6 feature-nopad" style="color:#ffffff; width: 47%; margin-right: 1%; margin-left: 1%; margin-bottom: 10px;"> <!--background: aquamarine"> -->
 
-            <a class="weatherwidget-io img-rounded" style="margin: 10px auto; width: 80%; height: 240px;" href="https://forecast7.com/de/49d308d70/wiesloch/" data-label_1="WIESLOCH" data-label_2="Wetterprognose" data-font="Helvetica" data-theme="weather_one" >WIESLOCH WEATHER</a>
-            <script>
-              !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
-            </script>
-          </div>
-
-            <div class="col-md-5 feature img-rounded" style="color:#404b54; background: #e8e8e8; margin-left: 4%">
-              <!-- width: 600px; height: 240px; -->
-              <span class="ti-time" style="color:#404b54;"></span>
-              <h2> Aktuelle Uhrzeit: </h2>
-              <div class="clock">
-                  <span style="color:#404b54" id="hr">00</span>
-                  <span style="color:#404b54"> : </span>
-                  <span style="color:#404b54" id="min">00</span>
-                  <span style="color:#404b54"> : </span>
-                  <span style="color:#404b54" id="sec">00</span>
-              </div>
-            </div>
-
+        <div class="col-md-6 img-rounded" style="color:#404b54; margin: 0 auto; width: 100%; height: 60px; background: #e8e8e8; margin-bottom: 25px;">
+          <h3 style="text-align: left"> <b>Info:</b> {{ infoMessage }} </h3>
         </div>
-        <!-- End: "plugins" -->
 
-      <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-      <script src="static/js/jquery.min.js"></script>
-      <!-- Include all compiled plugins (below), or include individual files as needed -->
-      <script src="static/js/bootstrap.min.js"></script>
-      <script src="static/js/bootstrap.js"></script>
-      <script src="static/js/jquery.easing.min.js"></script>
-      <script src="static/js/scrolling-nav.js"></script>
-      <script src="static/js/validator.js"></script>
-      <script src="static/js/clock.js"></script>
+        <a class="weatherwidget-io img-rounded" style="margin: 10px auto; width: 80%; height: 240px;" href="https://forecast7.com/de/49d308d70/wiesloch/" data-label_1="WIESLOCH" data-label_2="Wetterprognose" data-font="Helvetica" data-theme="weather_one" >WIESLOCH WEATHER</a>
+        <script>
+          !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
+        </script>
+      </div>
 
-      <!-- $('.carousel').carousel() -->
+        <div class="col-md-5 feature img-rounded" style="color:#404b54; background: #e8e8e8; margin-left: 4%">
+          <!-- width: 600px; height: 240px; -->
+          <span class="ti-time" style="color:#404b54;"></span>
+          <h2> Aktuelle Uhrzeit: </h2>
+          <div class="clock">
+              <span style="color:#404b54" id="hr">00</span>
+              <span style="color:#404b54"> : </span>
+              <span style="color:#404b54" id="min">00</span>
+              <span style="color:#404b54"> : </span>
+              <span style="color:#404b54" id="sec">00</span>
+          </div>
+        </div>
 
-    </body>
+    </div>
+    <!-- End: "plugins" -->
+
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="static/js/jquery.min.js"></script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="static/js/bootstrap.min.js"></script>
+  <script src="static/js/bootstrap.js"></script>
+  <script src="static/js/jquery.easing.min.js"></script>
+  <script src="static/js/scrolling-nav.js"></script>
+  <script src="static/js/validator.js"></script>
+  <script src="static/js/clock.js"></script>
+
+</body>
 </html>
