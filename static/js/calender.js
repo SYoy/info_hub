@@ -1,10 +1,10 @@
 // Your Client ID can be retrieved from your project in the Google
 // Developer Console, https://console.developers.google.com
 var CLIENT_ID = '618850417922-on3eth3su88u0c13lqs4eaod40hkojhn.apps.googleusercontent.com';
-var API_KEY = 'AIzaSyCf9pALBGw6VQBEmH6PwLXb7rO3AnUgP9g'
-var CAL_ID = 'nldm89pqes04qoig1kui225ucs@group.calendar.google.com'
+var API_KEY = 'AIzaSyCf9pALBGw6VQBEmH6PwLXb7rO3AnUgP9g';
+var CAL_ID = 'nldm89pqes04qoig1kui225ucs@group.calendar.google.com';
 var SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"];
-var d
+var d;
 
 
 /**
@@ -29,6 +29,9 @@ function appendPre(message) {
 }
 
 function eventInFutureToday(date) {
+    return 1;
+    /** needs bugfix */
+
     d = new Date();
     if (date.slice(11,13) >= d.getHours() && parseInt(date.slice(14,16)) + 5 >= d.getMinutes()) {
         return 1;
@@ -68,7 +71,7 @@ function listUpcomingEvents() {
     var events = resp.items;
     appendPre('Anstehende Kurse:');
 
-    var table = document.getElementById("dymanictable");
+    var table = document.getElementById("dynamictable");
     var rowCount = table.rows.length;
 
     if (events.length > 0) {
