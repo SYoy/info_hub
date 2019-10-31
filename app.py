@@ -10,6 +10,7 @@ Bootstrap(app)
 def index():
     pics = os.listdir('./static/slideshow')
     DoSlideShow = True if len(pics) > 1 and len(pics) < 10 else False
+
     with open('nachricht.json') as json_file:
         message = json.load(json_file)
 
