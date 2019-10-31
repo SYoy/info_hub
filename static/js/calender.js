@@ -29,15 +29,37 @@ function appendPre(message) {
 }
 
 function eventInFutureToday(date) {
-    return 1;
-    /** needs bugfix */
+    /**
+     * return 1;
+    needs bugfix */
 
-    d = new Date();
+    d = new Date(); /** Datumsobjekt - Zeit jetzt */
+    ref = new Date(date)
+
+    if (ref.getUTCFullYear() == d.getUTCFullYear() && ref.getUTCMonth() == d.getUTCMonth() &&
+        ref.getUTCDate() == d.getUTCDate()) {
+
+        if (ref.getUTCHours() > d.getUTCHours()) {
+            return 1;
+        } else if (ref.getUTCHours() == d.getUTCHours()) {
+            if (ref.getUTCMinutes() >= d.getUTCMinutes() + 5) {
+                return 1;
+            } else {
+                return 0;
+            }
+        } else {
+            return 0;
+        }
+    } else {
+        return 0;
+    }
+
+    /**
     if (date.slice(11,13) >= d.getHours() && parseInt(date.slice(14,16)) + 5 >= d.getMinutes()) {
         return 1;
     } else {
         return 0;
-    }
+    }*/
 }
 /**
  function eventInFutureToday(date) {
