@@ -22,6 +22,7 @@ function loadCalendarApi() {
  *
  * @param {string} message Text to be placed in pre element.
  */
+
 function appendPre(message) {
   var pre = document.getElementById('output');
   var textContent = document.createTextNode(message + '\n');
@@ -29,9 +30,6 @@ function appendPre(message) {
 }
 
 function eventInFutureToday(date) {
-    /**
-     * return 1;
-    needs bugfix */
 
     d = new Date(); /** Datumsobjekt - Zeit jetzt */
     ref = new Date(date)
@@ -42,7 +40,7 @@ function eventInFutureToday(date) {
         if (ref.getUTCHours() > d.getUTCHours()) {
             return 1;
         } else if (ref.getUTCHours() == d.getUTCHours()) {
-            if (ref.getUTCMinutes() >= d.getUTCMinutes() + 5) {
+            if (ref.getUTCMinutes() >= d.getUTCMinutes() - 10) { /* 10 min delay till event vanishes */
                 return 1;
             } else {
                 return 0;
@@ -53,32 +51,8 @@ function eventInFutureToday(date) {
     } else {
         return 0;
     }
+}
 
-    /**
-    if (date.slice(11,13) >= d.getHours() && parseInt(date.slice(14,16)) + 5 >= d.getMinutes()) {
-        return 1;
-    } else {
-        return 0;
-    }*/
-}
-/**
- function eventInFutureToday(date) {
-    d = new Date();
-    x = new Date(date)
-    if (x.getHours() >= d.getHours() && parseInt(x.getMinutes()) + 5 >= parseInt(d.getMinutes())) {
-        if (x.getUTCDate() == d.getUTCDate()) {
-        return 1;
-        } else {
-            return 0;
-        }
-    } else {
-        return 0;
-    }
-}
- * Print the summary and start datetime/date of the next ten events in
- * the authorized user's calendar. If no events are found an
- * appropriate message is printed.
- */
 function listUpcomingEvents() {
   var request = gapi.client.calendar.events.list({
     'calendarId': CAL_ID,

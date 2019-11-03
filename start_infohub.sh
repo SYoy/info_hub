@@ -2,11 +2,11 @@
 
 export SHELL=/bin/bash
 
-tmux new-sessions -s info -n 'hub' -declare
+tmux new-sessions -s info -n 'hub' -d
 
 tmux send-keys -t info:hub.0 'cd ~ && cd info_hub && python3 app.py' ENTER
 
-tmux new-session -s browser -n 'chromium' -declare
+tmux new-session -s browser -n 'chromium' -d
 
 sleep 5
 

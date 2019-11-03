@@ -11,6 +11,8 @@ Flask = "*"
 Flask-Bootstrap = "*"
 Flask-Uploads = "*"
 Flask-Cors = "*"
+wtforms = "*"
+flask-wtf = "*"
 
 [requires]
 python_version = "3.6"
