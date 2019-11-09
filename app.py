@@ -26,7 +26,7 @@ def index():
         'infoMessage': message['inhalt'],
         'pictures': [os.path.join('static','slideshow', pic) for pic in pics]
     }
-    return render_template('index.html', **templateData)
+    return render_template('index_old.html', **templateData)
 
 
 @app.route("/admin", methods=['GET', 'POST'])

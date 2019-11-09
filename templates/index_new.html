@@ -40,7 +40,7 @@
   <div class="container-fluid" style="background: #9d9d9d">
     <!-- Start: slideshow and timetable -->
     <div class="row hero-header content-ct" id="slideshow">
-      <div class="col-lg-7 img-rounded" style="color:#ffffff; width: 854px; height: 480px; margin-right: 10px;">
+      <div class="col-lg-7 img-rounded align-self-center" style="color:#ffffff; width: 854px; height: 480px; margin-right: 10px;">
         <!-- background: #a8b565;
          <h1> Sildeshow </h1>-->
 
@@ -88,32 +88,33 @@
   <!-- Start: "plugins" -->
   <div class="container-fluid" style="padding-top: 0px">
     <div class="row hero-header content-ct" style="min-height: 0px; background: #8cb595" id="wetter_zeit">
-      <div class="col-md-6 feature-nopad" style="color:#ffffff; width: 47%; margin-right: 1%; margin-left: 1%; margin-bottom: 10px;"> <!--background: aquamarine"> -->
+      <div class="col-md-6 feature-nopad" style="color:#ffffff; width: 47%; margin-right: 1%; margin-left: 1%; margin-bottom: 5px;"> <!--background: aquamarine"> -->
 
-        <a class="weatherwidget-io img-rounded" style="margin: 10px auto; width: 80%; height: 240px;" href="https://forecast7.com/de/49d308d70/wiesloch/" data-label_1="WIESLOCH" data-label_2="Wetterprognose" data-font="Helvetica" data-theme="weather_one" >WIESLOCH WEATHER</a>
+        <a class="weatherwidget-io img-rounded content-ct" style="margin: 0 auto; width: 80%; height: 240px;" href="https://forecast7.com/de/49d308d70/wiesloch/" data-label_1="WIESLOCH" data-label_2="Wetterprognose" data-font="Helvetica" data-theme="weather_one" >WIESLOCH WEATHER</a>
         <script>
           !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
         </script>
 
-        <div class="col-md-5 feature img-rounded content-ct" style="color:#404b54; margin-left: 4%">
-          <!-- width: 600px; height: 240px;
+        <!-- <div class="col-md-5 feature img-rounded" style="color:#404b54; margin-left: 4%">
+           width: 600px; height: 240px;
           <span class="ti-time" style="color:#404b54;"></span>
           <h2> Aktuelle Uhrzeit: </h2> -->
-          <div class="clock">
+          <div class="clock img-rounded content-ct" style="margin: 10px auto; width: 80%; height: auto; background: #e8e8e8;">
               <span style="color:#404b54; font-size: 45px" id="hr">00</span>
               <span style="color:#404b54; font-size: 45px"> : </span>
               <span style="color:#404b54; font-size: 45px" id="min">00</span>
-              <span style="color:#404b54; font-size: 45px"> : </span>
-              <span style="color:#404b54; font-size: 45px" id="sec">00</span>
+              <span style="color:#404b54; font-size: 45px"> Uhr</span>
+            <!--
+            <span style="color:#404b54; font-size: 45px"> : </span> -->
+              <span style="color:#404b54; font-size: 45px; display: none" id="sec">00</span>
           </div>
-        </div>
       </div>
 
-        <div class="col-md-5 feature img-rounded" style="color:#404b54; background: #e8e8e8; margin-left: 4%; width: 500px; height: 240px;">
+        <div class="col-md-5 feature img-rounded" style="color:#404b54; background: #e8e8e8; width: 854px; height: 280px; margin-left: 25px">
           <h2> News aus der Region? </h2>
         </div>
 
-        <div class="col-md-12 img-rounded" style="color:#404b54; margin: 0 auto; height: 60px; background: #e8e8e8; margin-bottom: 25px;">
+        <div class="col-md-12 img-rounded" style="color:#404b54; margin: 0 auto; height: 60px; background: #e8e8e8; margin-top: -5px">
           <marquee behavior="scroll" direction="left" scrolldelay="5" scrollamount="5">
             <h3 style="text-align: left"> <b>Info:</b> {{ infoMessage }} </h3>
           </marquee>
