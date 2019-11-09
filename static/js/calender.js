@@ -4,7 +4,7 @@ var CLIENT_ID = config.CLIENT_ID;
 var API_KEY = config.API_KEY;
 var CAL_ID = config.CAL_ID;
 var SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"];
-var d;
+var current_time;
 
 
 /**
@@ -31,16 +31,22 @@ function appendPre(message) {
 
 function eventInFutureToday(date) {
 
-    d = new Date(); /** Datumsobjekt - Zeit jetzt */
-    ref = new Date(date)
+    current_time = new Date(); /** Datumsobjekt - Zeit jetzt */
+    event_start_time = new Date(date)
 
-    if (ref.getUTCFullYear() == d.getUTCFullYear() && ref.getUTCMonth() == d.getUTCMonth() &&
-        ref.getUTCDate() == d.getUTCDate()) {
+    if (event_start_time.getUTCFullYear() == current_time.getUTCFullYear() && event_start_time.getUTCMonth() == current_time.getUTCMonth() &&
+        event_start_time.getUTCDate() == current_time.getUTCDate()) {
 
-        if (ref.getUTCHours() > d.getUTCHours()) {
+        if (event_start_time.getUTCHours() > current_time.getUTCHours()) {
             return 1;
-        } else if (ref.getUTCHours() == d.getUTCHours()) {
-            if (ref.getUTCMinutes() >= d.getUTCMinutes() - 10) { /* 10 min delay till event vanishes */
+        } else if (event_start_time.getUTCHours() == current_time.getUTCHours()) { /* same hour */
+            if (event_start_time.getUTCMinutes() >= current_time.getUTCMinutes() - 15) { /* 15 min delay till event vanishes */
+                return 1;
+            } else {
+                return 0;
+            }
+        } else if (event_start_time.getUTCHours() == current_time.getUTCHours() - 1 && current_time.getUTCMinutes() < 14) { /* hour before but in 15 min range */
+            if (event_start_time.getUTCMinutes() >= 60 + current_time.getUTCMinutes() - 15) {
                 return 1;
             } else {
                 return 0;
@@ -59,13 +65,13 @@ function listUpcomingEvents() {
     'timeMin': (new Date()).toISOString(),
     'showDeleted': false,
     'singleEvents': true,
-    'maxResults': 8,
+    'maxResults': 15,
     'orderBy': 'startTime'
   });
 
   request.execute(function(resp) {
     var events = resp.items;
-    appendPre('Anstehende Kurse:');
+    appendPre('aktuelle Kurszeiten');
 
     var table = document.getElementById("dynamictable");
     var rowCount = table.rows.length;
@@ -81,19 +87,20 @@ function listUpcomingEvents() {
         var till = event.end.dateTime;
         if (eventInFutureToday(from)) {
             appendPre(event.summary + ' (' + from.slice(11,16) + ' - ' + till.slice(11,16) + ')')
+            if (rowCount <= 6) {
+                var row = table.insertRow(rowCount);
 
-            var row = table.insertRow(rowCount);
-
-            row.insertCell(0).innerHTML= event.summary;
-            row.insertCell(1).innerHTML= from.slice(11,16) + ' - ' + till.slice(11,16);
-            rowCount += 1;
+                row.insertCell(0).innerHTML= event.summary.slice(0,20); /* pad string ? https://stackoverflow.com/questions/2686855/is-there-a-javascript-function-that-can-pad-a-string-to-get-to-a-determined-leng */
+                row.insertCell(1).innerHTML= from.slice(11,16) + ' - ' + till.slice(11,16);
+                rowCount += 1;
+            }
         }
       }
     } else {
         var row = table.insertRow(rowCount);
 
-        row.insertCell(0).innerHTML= 'keine';
-        row.insertCell(1).innerHTML= ':)';
+        row.insertCell(0).innerHTML= 'keine Kurse in Kalender eingetragen';
+        row.insertCell(1).innerHTML= '/';
         rowCount += 1;
 
       appendPre('heute keine Kurse mehr');
