@@ -21,13 +21,13 @@ function clock(){
             }
         }
     }
-    $('sec',s);
-    $('min',m);
-    $('hr',h);
+    check_under_10('sec',s);
+    check_under_10('min',m);
+    check_under_10('hr',h);
     animate=setTimeout(clock,1000);
 };
 
-function $(id,val){
+function check_under_10(id,val){
     if(val<10){
         val='0'+val;
     }
