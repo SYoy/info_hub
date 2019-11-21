@@ -87,10 +87,10 @@ function listUpcomingEvents() {
         var till = event.end.dateTime;
         if (eventInFutureToday(from)) {
             appendPre(event.summary + ' (' + from.slice(11,16) + ' - ' + till.slice(11,16) + ')')
-            if (rowCount <= 6) {
+            if (rowCount <= 7) {
                 var row = table.insertRow(rowCount);
 
-                row.insertCell(0).innerHTML= event.summary.slice(0,20); /* pad string ? https://stackoverflow.com/questions/2686855/is-there-a-javascript-function-that-can-pad-a-string-to-get-to-a-determined-leng */
+                row.insertCell(0).innerHTML= event.summary.slice(0,35); /* pad string ? https://stackoverflow.com/questions/2686855/is-there-a-javascript-function-that-can-pad-a-string-to-get-to-a-determined-leng */
                 row.insertCell(1).innerHTML= from.slice(11,16) + ' - ' + till.slice(11,16);
                 rowCount += 1;
             }
