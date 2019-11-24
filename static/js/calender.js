@@ -13,7 +13,12 @@ var current_time;
  */
 function loadCalendarApi() {
   gapi.client.setApiKey(API_KEY);
+  console.log("[Calender] loaded Calender API");
   gapi.client.load('calendar', 'v3', listUpcomingEvents);
+
+  window.setInterval(function(){
+        gapi.client.load('calendar', 'v3', listUpcomingEvents);
+    }, 60000); // 10 s -> 2-3min
 }
 
 /**
@@ -28,6 +33,10 @@ function appendPre(message) {
   var textContent = document.createTextNode(message + '\n');
   pre.appendChild(textContent);
 }
+
+/**
+ * check if date object is in future with delay of 15 min
+ */
 
 function eventInFutureToday(date) {
 
@@ -59,6 +68,14 @@ function eventInFutureToday(date) {
     }
 }
 
+function clearTable(table) {
+  var rows = table.rows;
+  var i = rows.length;
+  while (--i) {
+    rows[i].parentNode.removeChild(rows[i]);
+  }
+}
+
 function listUpcomingEvents() {
   var request = gapi.client.calendar.events.list({
     'calendarId': CAL_ID,
@@ -74,19 +91,19 @@ function listUpcomingEvents() {
     appendPre('aktuelle Kurszeiten');
 
     var table = document.getElementById("dynamictable");
+    // reset table
+    clearTable(table);
+
     var rowCount = table.rows.length;
 
     if (events.length > 0) {
       for (i = 0; i < events.length; i++) {
         var event = events[i];
         var from = event.start.dateTime;
-        /* if (!from) {
-          from = event.start.date;
-        }
-        */
         var till = event.end.dateTime;
+
         if (eventInFutureToday(from)) {
-            appendPre(event.summary + ' (' + from.slice(11,16) + ' - ' + till.slice(11,16) + ')')
+            appendPre(event.summary + ' (' + from.slice(11,16) + ' - ' + till.slice(11,16) + ')') // hard coded date slicing
             if (rowCount <= 7) {
                 var row = table.insertRow(rowCount);
 
@@ -103,8 +120,9 @@ function listUpcomingEvents() {
         row.insertCell(1).innerHTML= '/';
         rowCount += 1;
 
-      appendPre('heute keine Kurse mehr');
+      appendPre('keine Kurse eingetragen');
     }
 
   });
+  console.log("[Calender] listed upcoming event");
 }
