@@ -6,7 +6,6 @@ $(document).ready(function() {
 });
 
 function loadRSS(link, htmlContainer) {
-    var rand_i = Math.floor(Math.random() * 10);
     var url = link;
     var container = $(htmlContainer);
 
@@ -15,17 +14,25 @@ function loadRSS(link, htmlContainer) {
             console.log(result.error);
         } else {
             var entries = result.feed.entries;
-            //for(var i = 0; i < 1; i++){
-            //var entry = entries[i];
+            var used_i = [];
 
-            var entry = entries[rand_i];
-            container.append("<li>"// <p><h2>"
+            for(var i = 0; i < 2; i++){
+                while(true) {
+                    var rand_i = Math.floor(Math.random() * 50);
+                    if (used_i.includes(rand_i) === false) {
+                        used_i.push(rand_i);
+                        var entry = entries[rand_i];
+                        break
+                    }
+                }
+
+                container.append("<li>"// <p><h2>"
                 + "<h2 " +
                 // "href=\"" + entry.link + "\" target=\"_blank\"
                 ">" + entry.title + "</h2> \n"
                 + "<div>" + entry.description + "</div>"
                 + "</li>");
-            //}
+            }
         }
     });
 }
