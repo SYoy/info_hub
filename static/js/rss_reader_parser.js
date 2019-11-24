@@ -35,9 +35,11 @@ function loadRSS(link, htmlContainer) {
                 while(true) {
                     var rand_i = Math.floor(Math.random() * 20);
                     if (used_i.includes(rand_i) === false) {
-                        used_i.push(rand_i);
-                        var entry = entries[rand_i];
-                        break
+                        if (entries[rand_i].description.length < 250){
+                            used_i.push(rand_i);
+                            var entry = entries[rand_i];
+                            break
+                        }
                     }
                 }
 
