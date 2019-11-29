@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="info hub pfiffikus">
   <meta name="author" content="Marius Steger">
-  <meta http-equiv="refresh" content="120" >
+  <meta http-equiv="refresh" content="3000" >
   <title> {{ title }} </title>
 
   <!-- Bootstrap -->
@@ -27,13 +27,19 @@
     <!-- Start: slideshow and timetable -->
     <div class="row hero-header content-ct">
       <div class="col-lg-7 img-rounded" style="color:#404b54; width: 854px; height: 600px; margin-right: 10px; min-height: 100vh">
-        <h2>Change running message</h2>
-          <br>
-          <form action="" method="post" novalidate>
-            {{ form.hidden_tag() }}
-            {{ form.message.label }} {{ form.message(size=60) }}
-            {{ form.submit() }}
-          </form>
+        <h2>Sign In</h2>
+            <form action="" method="post" novalidate>
+                {{ form.hidden_tag() }}
+                <p>
+                    {{ form.username.label }}<br>
+                    {{ form.username(size=32) }}
+                </p>
+                <p>
+                    {{ form.password.label }}<br>
+                    {{ form.password(size=32) }}
+                </p>
+                <p>{{ form.submit() }}</p>
+            </form>
       </div>
     </div>
 
