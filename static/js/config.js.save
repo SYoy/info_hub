@@ -1,0 +1,12 @@
+AIzaSyCf9pALBGw6VQBEmH6PwLXb7rO3AnUgP9g",
+    CAL_ID: "nldm89pqes04qoig1kui225ucs@group.calendar.google.com",
+
+var config = {
+    CLIENT_ID : 'enter google client ID from https://console.developers.google.com',
+    API_KEY : 'var config = {
+    CLIENT_ID : 'enter google client ID from https://console.developers.google.com',
+    API_KEY : 'enter google api key from https://console.developers.google.com',
+    CAL_ID : 'CALENDERID@group.calendar.google.com',
+};',
+    CAL_ID : 'CALENDERID@group.calendar.google.com',
+};
