@@ -28,3 +28,12 @@ var config = {
 ```
 
 - do not change `"inhalt"`
+
+## Setup a raspi:
+- install raspbian
+- clone git repo
+- use branch pfiffikus
+- add config files (API keys, calender IDs, etc.)
+- to enable autostart:
+    - sudo crontab -e -> start_script.sh ausführen (chmod +x)
+    - .config/lxsess.../.../autostart : configure chromium in kiosk mode
