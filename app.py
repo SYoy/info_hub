@@ -36,7 +36,7 @@ def admin():
     if form.validate_on_submit():
         with open('nachricht.json', 'r') as json_file:
             message = json.load(json_file)
-            message["inhalt"] = form.message.data if len(form.message.data) > 4 else "Willkommen in der Pfiffikus-Lernhilfe Wiesloch!"
+            message["inhalt"] = form.message.data if len(form.message.data) > 4 else "Willkommen bei Pfiffikus Wiesloch!"
 
         with open('nachricht.json', 'w') as json_file:
             json.dump(message, json_file)
